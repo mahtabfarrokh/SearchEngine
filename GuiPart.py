@@ -1,6 +1,6 @@
 import tkinter.filedialog
 from tkinter import *
-from tkinter.filedialog import askopenfilename
+
 from tkinter.scrolledtext import ScrolledText
 
 import FileOpener
@@ -60,7 +60,7 @@ class GUI :
         self.root.destroy()
 
     def buildTree (self) :
-        if self.var.get()==1 or (self.var.get()==2) or (self.var.get()==3) :
+        if self.var.get()==1 or (self.var.get()==2) or (self.var.get()==3) or (self.var.get()==4) :
             self.fileopen.openDir(self.path, self.getTreeType() , self.scrolltext )
 
     def showChooseFile (self) :
@@ -163,18 +163,8 @@ class GUI :
         self.redbutton = Button(self.frame1, text="Browse", font=10, command=self.showChooseFile)
         self.redbutton.pack()
 
-    #    self.scrollbar = Scrollbar(self.frame4)
-    #    self.scrollbar.pack(side=RIGHT, fill=Y)
-
-    #    self.mylist = Listbox( self.frame4, yscrollcommand=self.scrollbar.set  , font=10 ,width =118 , height = 30 )
-        # for line in range(100):
-        #   mylist.insert(END, "This is line number " + str(line) )
-
         self.scrolltext = ScrolledText(self.frame4 , font=10 ,width =118 , height = 30 )
         self.scrolltext.pack(side=LEFT, fill=BOTH)
-
-    #    self.mylist.pack(side=LEFT, fill=BOTH)
-    #    self.scrollbar.config(command=self.mylist.yview)
 
         self.var = IntVar()
         self.R1 = Radiobutton(self.frame8, text="TST", variable=self.var, value=1, font=20)
@@ -185,6 +175,9 @@ class GUI :
 
         self.R3 = Radiobutton(self.frame8, text="Trie", variable=self.var, value=3, font=20)
         self.R3.pack(anchor=W)
+
+        self.R4 = Radiobutton(self.frame8, text="Hash", variable=self.var, value=4, font=20)
+        self.R4.pack(anchor=W)
 
         self.label3 = Label(self.frame5, text="\nPlease enter your command:", height=4, font=17)
         self.label3.pack()

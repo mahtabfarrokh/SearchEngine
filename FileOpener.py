@@ -10,12 +10,14 @@ import Trie
 import TST
 import fnmatch
 import time
+import hash
 class fileOpener :
     def __init__(self):
         self.stack = MyStack.Stack()
         self.bst = BST.BinarySearchTree(self)
         self.trie = Trie.MyTrie(self)
         self.tst = TST.MyTST(self)
+        self.hash = hash.Hash(self)
         self.address = None
         f = open(os.getcwd() + "/stopWord.txt", 'r')
         str = f.read(-1)
@@ -40,6 +42,8 @@ class fileOpener :
                     self.trie.insertChild(w.lower(), ntpath.basename(filename))
                 if treeType == 1:
                     self.tst.insertChild(self.tst.root, w.lower(), ntpath.basename(filename), 0)
+                if treeType == 4 :
+                    self.hash.insertChild(w.lower() ,ntpath.basename(filename) )
         f.close()
     def existFile(self , filename):
         for root, dirnames, filenames in os.walk(self.address):
@@ -102,6 +106,8 @@ class fileOpener :
                         self.trie.deleteNode(w.lower() , filename , showList)
                     if treeType == 1:
                         self.tst.deleteNode(w.lower() , filename, showList)
+                    if treeType ==4 :
+                        self.hash.deleteNode(w.lower() , filename , showList)
             f.close()
             list = self.stack.items
             for i in range(0, len(list)) :
@@ -179,6 +185,10 @@ class fileOpener :
             self.trie.wordNum=0
             self.trie.visit(self.trie.root , "" , listShow , "" , 1 )
             self.writeList(listShow, "Number of words =" + str(self.trie.wordNum))
+        if treeType==4 :
+            self.hash.wordNum =0
+            self.hash.visit(listShow ,"" ,1 )
+            self.writeList(listShow, "Number of words =" + str(self.hash.wordNum))
     def searchWord (self ,word , treeType , listShow) :
         #command search -w ""
         start_time = time.time()
@@ -189,6 +199,8 @@ class fileOpener :
             self.bst.searchOneWord(self.bst.root , word , 1 ,listShow ,"")
         if treeType==3 :
             self.trie.searchOneWord(word,1 ,listShow)
+        if treeType ==4 :
+            self.hash.searchOneWord(word ,1 , listShow)
         print ("time for search one word : ")
         millis = int(round(time.time() * 1000))
         millis2 =int (round ( start_time*1000))
@@ -201,3 +213,5 @@ class fileOpener :
             self.bst.searchOneLine(line , self.stopW , listShow)
         if treeType==3 :
             self.trie.searchOneLine(line , self.stopW , listShow)
+        if treeType==4 :
+            self.hash.searchOneLine(line , self.stopW , listShow)
