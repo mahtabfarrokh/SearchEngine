@@ -3,13 +3,16 @@ class Node :
         self.data = dWord
         self.Rc = None
         self.Lc = None
+        self.HR = 0
+        self.HL =0
 class BinarySearchTree :
     def __init__(self , fileOpen ):
         self.root = None
         self.listfileSearch = []
-        self.ps = 0 ;
+        self.ps = 0
         self.fileOpen = fileOpen
         self.wordNum =0
+        self.levelNode =[]
 
     def insertChild(self, reroot , node):
         # add node
@@ -34,7 +37,7 @@ class BinarySearchTree :
                     reroot.Rc = node
                 else :
                     self.insertChild(reroot.Rc , node)
-
+        self.AVL()
     def in_order_print(self , root  ,listShow , filename , p):
         if not root or root.data.data is None  :
             return
@@ -81,6 +84,7 @@ class BinarySearchTree :
                        reroot.data.listFile.pop(counter)
                        if len(reroot.data.listFile) ==0 :
                            del reroot
+                           self.AVL()
                        break
                    counter += 1
            else :
@@ -121,3 +125,83 @@ class BinarySearchTree :
 
     def updeateNode(self, filename, listShow):
         self.in_order_print(self.root, listShow , filename , 2)
+    def visitLevelOrder (self ) :
+        current = self.root
+        self.levelNode.clear()
+        self.levelNode.append(current)
+        i=0
+        while(i< len(self.levelNode)) :
+            current = self.levelNode[i]
+            if(current.Lc is not None) :
+                self.levelNode.append(current.Lc)
+            if(current.Rc is not None) :
+                self.levelNode.append(current.Rc)
+            if (current.Lc is None)and (current.Rc is None):
+                self.levelNode.pop(i)
+            else :
+                i+=1
+        self.levelNode.reverse()
+    def setHeight (self , node) :
+        if (node is None) :
+            return 0
+        node.HL = self.setHeight(node.Lc) +1
+        node.HR = self.setHeight(node.Rc) +1
+        return abs(node.HL - node.HR)
+    def LL_AVL (self , node) :
+         rotate = node
+         rotate.Lc = node.Lc.Rc
+         rotate2 = node.Lc.Rc
+         node.data = node.Lc.data
+         node.Rc = rotate
+         node.HR = node.Lc.HR
+         node.HL = node.Lc.HL
+         node.Lc = node.Lc.Lc
+         rotate.Lc = rotate2
+    def RR_AVL (self , node) :
+         rotate = node
+         if(node.Rc.Lc is not None) :
+            rotate.Rc = node.Rc.Lc
+            rotate2 = node.Rc.Lc
+         else :
+             rotate2 = None
+             rotate.Rc = None
+         node.data = node.Rc.data
+         node.Lc = rotate
+         node.HL = node.Rc.HL
+         node.HR = node.Rc.HR
+         node.Rc = node.Rc.Rc
+         rotate.Rc = rotate2
+    def LR_AVL (self , node) :
+        rotate = node.Lc
+        rotate2 = node.Lc.Rc
+        rotate.Rc = None
+        node.Lc = rotate2
+        node.Lc.Lc = rotate
+        self.LL_AVL(node)
+    def RL_AVL (self , node) :
+        rotate = node.Rc
+        rotate2 = node.Rc.Lc
+        rotate.Lc = None
+        node.Rc = rotate2
+        node.Rc.Rc = rotate
+        self.RR_AVL(node)
+    def AVL (self) :
+        self.setHeight(self.root)
+        self.visitLevelOrder()
+        if len(self.levelNode)!=0 :
+            for node in self.levelNode :
+                k = node.HL - node.HR
+                if abs(k) >= 2  :
+                    if k>0 :
+                        #L
+                        h = node.Lc.HL - node.Lc.HR
+                        if h>0 :
+                            self.LL_AVL(node)
+                        else :
+                            self.LR_AVL(node)
+                    else :
+                        h = node.Rc.HL - node.Rc.HR
+                        if h > 0:
+                            self.RL_AVL(node)
+                        else:
+                            self.RR_AVL(node)
