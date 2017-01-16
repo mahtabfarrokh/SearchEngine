@@ -17,7 +17,6 @@ class BinarySearchTree :
 
     def insertChild(self, reroot , node):
         # add node
-        print("node :", node.data.data)
         if self.root is None :
             #add root
             self.root = node
@@ -153,7 +152,6 @@ class BinarySearchTree :
         node.HR = self.setHeight(node.Rc) +1
         return max(node.HL , node.HR)
     def LL_AVL (self , node) :
-         print("LL")
          rotate = node #root
          wNode = Word.myWord(rotate.data.data, *rotate.data.listFile)
          nn = Node(wNode)
@@ -167,7 +165,6 @@ class BinarySearchTree :
          node.Rc = nn
 
     def RR_AVL(self, node):
-        print("RR")
         rotate = node  # root
         wNode = Word.myWord(rotate.data.data, *rotate.data.listFile)
         nn = Node(wNode)
@@ -181,7 +178,6 @@ class BinarySearchTree :
         node.Lc = nn
 
     def LR_AVL (self , node) :
-        print("LR")
         rotate1 = node.Lc
         rotate = node.Lc.Rc
         wNode = Word.myWord(rotate1.data.data, *rotate1.data.listFile)
@@ -195,7 +191,6 @@ class BinarySearchTree :
         self.LL_AVL(node)
 
     def RL_AVL (self , node) :
-        print("RL")
         rotate1 = node.Rc
         rotate = node.Rc.Lc
         wNode = Word.myWord(rotate1.data.data, *rotate1.data.listFile)

@@ -9,6 +9,8 @@ class Node :
         self.mid = None
         self.word = endWord
         self.address = []
+        self.HL =0
+        self.HR =0
 
 class MyTST :
     def __init__(self ,fileOpen):
@@ -17,6 +19,7 @@ class MyTST :
         self.root = Node ("" , [] )
         self.wordNum = 0
         self.delList = []
+        self.levelNode = []
 
     def insertChild (self , node ,  word , address  , d )  :
         #add node recursive
@@ -24,6 +27,7 @@ class MyTST :
         if (node is None) :
             node = Node(char, [])
             node.address.append(address)
+            self.AVL()
         if node.char == "" :
             node.mid = self.insertChild(node.mid, word, address, d )
         elif char < node.char :
@@ -39,7 +43,7 @@ class MyTST :
         return node
 
     def visit(self, reroot, ch , listShow , filename , p):
-
+        self.visitLevelOrder()
         if reroot is not None :
             if reroot.Lc is not None :
                 self.visit(reroot.Lc , ch , listShow , filename , p)
@@ -104,6 +108,7 @@ class MyTST :
                                 for d in self.delList[::-1] :
                                     if (d.mid is None)and (d.Lc is None)and (d.Rc is None) :
                                         del d
+                                        self.AVL()
                                     else :
                                         self.delList[-1].word = None
                                         break
@@ -112,6 +117,7 @@ class MyTST :
                                     for a in d.address :
                                         if a ==filename :
                                             del a
+                                            self.AVL()
                                             break
                                 del self.delList[:]
                             break
@@ -158,3 +164,108 @@ class MyTST :
 
     def updeateNode (self,filename , listshow ) :
         self.visit(self.root.mid , "" , listshow , filename ,2 )
+    def visitLevelOrder (self ) :
+        current = self.root
+        self.levelNode.clear()
+        self.levelNode.append(current)
+        i=0
+        while(i< len(self.levelNode)) :
+            current = self.levelNode[i]
+            if(current.Lc is not None) :
+                self.levelNode.append(current.Lc)
+            if(current.Rc is not None) :
+                self.levelNode.append(current.Rc)
+            if (current.mid is not None):
+                self.levelNode.append(current.mid)
+            if ((current.Lc is None)and (current.Rc is None) and (current.mid is None) )or current is None :
+                self.levelNode.pop(i)
+            else :
+                i+=1
+        self.levelNode.reverse()
+
+    def setHeight (self , node) :
+        if (node is None) :
+            return 0
+        node.HL = self.setHeight(node.Lc) +1
+        node.HR = self.setHeight(node.Rc) +1
+        return max(node.HL , node.HR)
+
+    def LL_AVL (self , node) :
+         rotate = node #root
+         nn = Node(rotate.char , rotate.word)
+         nn.Rc = rotate.Rc
+         nn.mid = rotate.mid
+         nn.address = rotate.address
+         rotate3 = node.Lc  #Will be root
+
+         if (node.Lc.Rc is not None) :
+             nn.Lc = node.Lc.Rc
+         node.Lc = rotate3.Lc
+         node.data = rotate3.data
+         node.Rc = nn
+
+    def RR_AVL(self, node):
+        rotate = node  # root
+        nn = Node(rotate.char, rotate.word)
+        nn.Lc = rotate.Lc
+        nn.mid = rotate.mid
+        nn.address = rotate.address
+        rotate3 = node.Rc  # Will be root
+        if (node.Rc.Lc is not None):
+            rotate2 = node.Rc.Lc
+            nn.Rc = rotate2
+        node.Rc = rotate3.Rc
+        node.data = rotate3.data
+        node.Lc = nn
+
+    def LR_AVL (self , node) :
+        rotate1 = node.Lc
+        rotate = node.Lc.Rc
+        nn = Node(rotate1.char, rotate1.word)
+        nn.Lc = rotate1.Lc
+        nn.mid = rotate.mid
+        nn.address = rotate.address
+        if(node.Lc.Rc.Lc is not None ) :
+            nn.Rc = node.Lc.Rc.Lc
+        node.Lc.data = rotate.data
+        node.Lc.Rc = rotate.Rc
+        node.Lc.Lc = nn
+        self.LL_AVL(node)
+
+    def RL_AVL (self , node) :
+        rotate1 = node.Rc
+        rotate = node.Rc.Lc
+        nn = Node(rotate1.char, rotate1.word)
+        nn.Rc = rotate1.Rc
+        nn.mid = rotate.mid
+        nn.address = rotate.address
+        if (node.Rc.Lc.Rc is not None):
+            nn.Lc = node.Rc.Lc.Rc
+        node.Rc.data = rotate.data
+        node.Rc.Lc = rotate.Lc
+        node.Rc.Rc = nn
+        self.RR_AVL(node)
+
+    def AVL (self) :
+        self.setHeight(self.root)
+        self.visitLevelOrder()
+        if len(self.levelNode)!=0 :
+            for node in self.levelNode :
+                k = node.HL - node.HR
+                if (abs(k) >= 2 ) :
+                    if ((node.Lc is not None)and((node.Lc.Lc is not None)or(node.Lc.Rc is not None))) or \
+                            ((node.Rc is not None) and ((node.Rc.Rc is not None) or (node.Rc.Lc is not None))):
+                        if k > 0:
+                            # L
+                            h = node.Lc.HL - node.Lc.HR
+                            self.avlNode = node
+                            if h > 0:
+                                self.LL_AVL(node)
+                            else:
+                                self.LR_AVL(node)
+                        else:
+                            h = node.Rc.HL - node.Rc.HR
+                            if h > 0:
+                                self.RL_AVL(node)
+                            else:
+                                self.RR_AVL(node)
