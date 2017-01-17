@@ -27,7 +27,7 @@ class MyTST :
         if (node is None) :
             node = Node(char, [])
             node.address.append(address)
-            self.AVL()
+            #self.AVL()
         if node.char == "" :
             node.mid = self.insertChild(node.mid, word, address, d )
         elif char < node.char :
@@ -38,7 +38,7 @@ class MyTST :
             node.mid = self.insertChild(node.mid , word , address , d+1)
         else :
             node.word = word
-            if not address in node.address :
+            if not address == node.address[len(node.address)-1] :
                  node.address.append(address)
         return node
 
@@ -70,7 +70,9 @@ class MyTST :
                             reroot.address.pop(counter)
                             break
                         counter += 1
+                   # self.AVL()
                     return
+
 
     def reSearchW(self, reroot, word , realW , p , filename  ,listShow):
 

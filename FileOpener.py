@@ -70,6 +70,7 @@ class fileOpener :
 
     def openDir(self, str , treeType  , listShow) :
         #open directory recursively and build tree
+        counter =0
         start_time = time.time()
         self.address = str
         self.stack.deleteStack()
@@ -88,8 +89,15 @@ class fileOpener :
                 matches.append(root + "/" + filename)
         for filename in matches:
             self.readFile(filename , treeType , 1 )
+            counter +=1
+            print("c : " , counter )
         self.writeList(listShow , "tree Built")
+        print("openning file")
         print("--- %s seconds ---" % (time.time() - start_time))
+        if (treeType== 2 ):
+            self.bst.AVL()
+        if (treeType==1 ):
+            self.tst.AVL()
         return
     def deleteFile (self, showList , treeType , filename) :
         check = self.existFile(filename)
@@ -173,6 +181,7 @@ class fileOpener :
         self.writeList(showList, "Number of listed docs = " + str(counter) )
     def listAllWord (self , treeType , listShow) :
         # command list -w
+        start_time = time.time()
         if treeType==1 :
             self.tst.wordNum =0
             self.tst.visit(self.tst.root.mid , "" , listShow , "" , 1)
@@ -189,6 +198,8 @@ class fileOpener :
             self.hash.wordNum =0
             self.hash.visit(listShow ,"" ,1 )
             self.writeList(listShow, "Number of words =" + str(self.hash.wordNum))
+        print("list -w")
+        print("--- %s seconds ---" % (time.time() - start_time))
     def searchWord (self ,word , treeType , listShow) :
         #command search -w ""
         start_time = time.time()
@@ -207,6 +218,7 @@ class fileOpener :
         print("--- %s seconds ---" % (millis -millis2))
     def searchLine (self , line , treeType , listShow) :
         #command search -S ""
+        start_time = time.time()
         if treeType==1 :
             self.tst.searchOneLine(line , self.stopW , listShow)
         if treeType==2 :
@@ -215,3 +227,7 @@ class fileOpener :
             self.trie.searchOneLine(line , self.stopW , listShow)
         if treeType==4 :
             self.hash.searchOneLine(line , self.stopW , listShow)
+        print("time for search one line : ")
+        millis = int(round(time.time() * 1000))
+        millis2 = int(round(start_time * 1000))
+        print("--- %s seconds ---" % (millis - millis2))

@@ -23,24 +23,23 @@ class BinarySearchTree :
             self.AVL()
             return
         if reroot.data.data.lower() == node.data.data.lower() :
-            for i in reroot.data.listFile :
-                if i==node.data.listFile[0] :
-                    return
+            if not node.data.listFile[0] ==reroot.data.listFile[len(reroot.data.listFile)-1] :
+                reroot.data.listFile.append(node.data.listFile[0])
+                return
             reroot.data.listFile.append(node.data.listFile[0])
-            return
         else :
             if reroot.data.data > node.data.data :
                 if reroot.Lc is None :
                     reroot.Lc = node
                 else :
                     self.insertChild(reroot.Lc , node)
-                self.AVL()
+              #  self.AVL()
             else :
                 if reroot.Rc is None :
                     reroot.Rc = node
                 else :
                     self.insertChild(reroot.Rc , node)
-                self.AVL()
+              #  self.AVL()
 
     def in_order_print(self , root  ,listShow , filename , p):
         if not root or root.data.data is None  :
@@ -61,7 +60,10 @@ class BinarySearchTree :
                     root.data.listFile.pop(counter)
                     break
                 counter += 1
+
         self.in_order_print(root.Rc , listShow, filename , p)
+        if (p==2 ) :
+            self.AVL()
     def searchOneWord (self ,reroot , word , p , listShow , filename ) :
         # search word recursive
         if reroot is None or reroot.data.data is None :
@@ -204,6 +206,7 @@ class BinarySearchTree :
         self.RR_AVL(node)
 
     def AVL (self) :
+        print("AVL")
         self.setHeight(self.root)
         self.visitLevelOrder()
         if len(self.levelNode)!=0 :

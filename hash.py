@@ -10,6 +10,7 @@ class Hash () :
         self.wordNum =0
         self.intersect = 0
         self.listfileSearch =[]
+
         for  i in range(self.hashSize) :
             k = []
             self.hashList.append(k)
@@ -20,7 +21,7 @@ class Hash () :
         for h in self.hashList[k] :
             w = h.word
             if w == word :
-                if not address in h.address  :
+                if not address ==  h.address[len(h.address)-1]  :
                     h.address.append(address)
                 return
         e = Element(word)
@@ -31,7 +32,6 @@ class Hash () :
         for i in self.hashList :
             if len(i) == 1:
                 self.intersect += 1
-        print("m :" , self.intersect)
         for l in self.hashList :
             for e in l :
                 if p== 1 :

@@ -42,7 +42,10 @@ class MyTrie :
                 while(cur2 is not None ) :
                     if(cur2.data == c) :
                         x=1
-                        if not address in cur2.address :
+                        if len(cur2.address) ==0 :
+                            if (end ==1 ) :
+                              cur2.address.append(address)
+                        elif not address == cur2.address[len(cur2.address)-1] :
                             if (end ==1 ) :
                               cur2.address.append(address)
                         current = cur2
